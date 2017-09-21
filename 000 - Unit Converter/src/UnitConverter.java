@@ -1,6 +1,7 @@
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 class UnitNotFoundException extends Exception {
     UnitNotFoundException() {
@@ -32,37 +33,19 @@ class NotANumberException extends Exception {
     }
 }
 
-abstract class Unit {
+abstract class Units {
     /*
     units contains names of units and maps them to their exponents
     put names must be in lower case
      */
-    private static HashMap<String, Double> units;
+    protected static LinkedHashMap<String, Double> units = new LinkedHashMap<String, Double>();
 
-    abstract double getResult();
+    private double result = 0.00;
 
-    abstract void availableUnits();
-}
-
-class LengthUnit extends Unit {
-
-    private double result;
-
-    private static HashMap<String, Double> units = new HashMap<String, Double>();
-
-    static {
-        units.put("kilometres", 3.0);
-        units.put("metres", 0.0);
-        units.put("decimetres", -1.0);
-        units.put("centimetres", -2.0);
-        units.put("micrometres", -3.0);
-        units.put("micrometres", -6.0);
+    Units() {
     }
 
-    LengthUnit() {
-    }
-
-    LengthUnit(double quantity, String startingUnit, String endingUnit) {
+    Units(double quantity, String startingUnit, String endingUnit) {
         double startExponent, endExponent;
         try {
             startExponent = getExponent(startingUnit);
@@ -75,7 +58,6 @@ class LengthUnit extends Unit {
             System.exit(1);
         }
 
-
     }
 
     private static double getExponent(String unit) throws UnitNotFoundException {
@@ -86,18 +68,74 @@ class LengthUnit extends Unit {
 
     }
 
-    @Override
-    public void availableUnits() {
+    double getResult() {
+        return result;
+    }
+
+    void availableUnits() {
         Iterator<String> iterator = units.keySet().iterator();
-        System.out.println("available length units: ");
+        System.out.println("available units: ");
         while (iterator.hasNext())
             System.out.println(" " + iterator.next());
     }
+}
 
-    @Override
-    public double getResult() {
-        return result;
+class LengthUnits extends Units {
+
+    static {
+        units.put("kilometres", 3.0);
+        units.put("metres", 0.0);
+        units.put("decimetres", -1.0);
+        units.put("centimetres", -2.0);
+        units.put("micrometres", -3.0);
+        units.put("micrometres", -6.0);
     }
+
+    LengthUnits() {
+    }
+
+    LengthUnits(double quantity, String startingUnit, String endingUnit) {
+        super(quantity, startingUnit, endingUnit);
+    }
+}
+
+class WeightUnits extends Units {
+
+    static {
+        units.put("ton", 3.0);
+        units.put("kilogram", 0.0);
+        units.put("decagram", -2.0);
+        units.put("gram", -3.0);
+        units.put("milligram", -6.0);
+    }
+
+    WeightUnits() {
+    }
+
+    WeightUnits(double quantity, String startingUnit, String endingUnit) {
+        super(quantity, startingUnit, endingUnit);
+    }
+
+}
+
+class AreaUnits extends Units {
+
+    static {
+        units.put("square.kilometres", 6.0);
+        units.put("square.metres", 0.0);
+        units.put("square.decimetres", -2.0);
+        units.put("square.centimetres", -4.0);
+        units.put("square.micrometres", -6.0);
+        units.put("square.micrometres", -12.0);
+    }
+
+    AreaUnits() {
+    }
+
+    AreaUnits(double quantity, String startingUnit, String endingUnit) {
+        super(quantity, startingUnit, endingUnit);
+    }
+
 }
 
 public class UnitConverter {
@@ -107,15 +145,16 @@ public class UnitConverter {
         System.out.println("usage:");
         System.out.println("    x quantity startingUnit endingUnit");
         System.out.println("    where x is one of the following:");
-        System.out.println("        a - area units");
         System.out.println("        l - length units");
+        System.out.println("        a - area units");
+        System.out.println("        w - weight units");
         System.out.println("type \"units\" for list of available units");
     }
 
 
     private static void availableUnits() {
-        LengthUnit lu = new LengthUnit();
-        lu.availableUnits();
+        Units[] arrayOfUnits = {new LengthUnits(), new AreaUnits(), new WeightUnits()};
+        arrayOfUnits[0].availableUnits();
     }
 
     public static void main(String[] args) {
@@ -136,10 +175,17 @@ public class UnitConverter {
                 String startingUnit = args[2];
                 String endingUnit = args[3];
 
-                Unit u;
+
+                Units u;
                 switch (type) {
                     case 'l':
-                        u = new LengthUnit(quantity, startingUnit, endingUnit);
+                        u = new LengthUnits(quantity, startingUnit, endingUnit);
+                        break;
+                    case 'a':
+                        u = new AreaUnits(quantity, startingUnit, endingUnit);
+                        break;
+                    case 'w':
+                        u = new WeightUnits(quantity, startingUnit, endingUnit);
                         break;
                     default:
                         throw new UnknownTypeException(type);
