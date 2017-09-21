@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/000 - Unit Converter/000 - Unit Converter.iml" filepath="$PROJECT_DIR$/000 - Unit Converter/000 - Unit Converter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/009 - Quine/009 - Quine.iml" filepath="$PROJECT_DIR$/009 - Quine/009 - Quine.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/programming-challenges.iml" filepath="$PROJECT_DIR$/.idea/programming-challenges.iml" />
     </modules>
   </component>
